@@ -25,9 +25,12 @@
 */
 package net.fuzzyblocks.easyworldguard;
 
+import net.fuzzyblocks.easyworldguard.managers.RegionManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class EasyWorldguard extends JavaPlugin {
+
+    private RegionManager regionManager;
 
     public void onEnable() {
         registerCommands();
@@ -35,6 +38,8 @@ public class EasyWorldguard extends JavaPlugin {
         setupConfig();
 
         enableMetrics();
+
+        regionManager = new RegionManager(this);
     }
 
     private void registerCommands() {
@@ -47,5 +52,9 @@ public class EasyWorldguard extends JavaPlugin {
 
     private void enableMetrics() {
 
+    }
+
+    public RegionManager getRegionManager() {
+        return regionManager;
     }
 }
