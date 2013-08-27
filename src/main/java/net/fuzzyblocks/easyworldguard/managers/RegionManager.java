@@ -23,7 +23,7 @@
 * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 * POSSIBILITY OF SUCH DAMAGE.
 */
-package net.fuzzyblocks.easyworldguard;
+package net.fuzzyblocks.easyworldguard.managers;
 
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.worldedit.BlockVector;
@@ -34,19 +34,20 @@ import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import net.fuzzyblocks.easyworldguard.EasyWorldguard;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 
-public class Manager {
+public class RegionManager {
 
     private EasyWorldguard plugin;
     private WorldGuardPlugin worldGuard;
     private WorldEditPlugin worldEdit;
 
-    public Manager(EasyWorldguard plugin) {
+    public RegionManager(EasyWorldguard plugin) {
         this.plugin = plugin;
         this.worldGuard = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
         try {
@@ -60,14 +61,14 @@ public class Manager {
         return worldEdit.getSelection(Bukkit.getPlayer(playerName));
     }
 
-    private RegionManager getRegionManager(World world) {
+    private com.sk89q.worldguard.protection.managers.RegionManager getRegionManager(World world) {
         return worldGuard.getRegionManager(world);
     }
 
     public boolean claimRegion(String playerName, String regionName) {
         Selection selection = this.getSelection(playerName);
         World world = selection.getWorld();
-        RegionManager regionManager = getRegionManager(world);
+        com.sk89q.worldguard.protection.managers.RegionManager regionManager = getRegionManager(world);
         if (regionManager.getRegion(regionName) == null) {
             DefaultDomain owners = new DefaultDomain();
 
@@ -90,7 +91,7 @@ public class Manager {
 
     public boolean deleteRegion(String playerName, String regionName) {
         Player player = Bukkit.getPlayer(playerName);
-        RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
+        com.sk89q.worldguard.protection.managers.RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
         ProtectedRegion region = regionManager.getRegion(regionName);
 
         if (region != null && region.getOwners().contains(playerName)) {
@@ -102,7 +103,7 @@ public class Manager {
 
     public boolean addMember(String ownerName, String memberName, String regionName) {
         Player owner = Bukkit.getPlayer(ownerName);
-        RegionManager regionManager = worldGuard.getRegionManager(owner.getWorld());
+        com.sk89q.worldguard.protection.managers.RegionManager regionManager = worldGuard.getRegionManager(owner.getWorld());
         ProtectedRegion region = regionManager.getRegion(regionName);
 
         if (region != null && region.getOwners().contains(ownerName)) {
@@ -114,7 +115,7 @@ public class Manager {
 
     public boolean giveRegion(String ownerName, String newOwner, String regionName) {
         Player owner = Bukkit.getPlayer(ownerName);
-        RegionManager regionManager = worldGuard.getRegionManager(owner.getWorld());
+        com.sk89q.worldguard.protection.managers.RegionManager regionManager = worldGuard.getRegionManager(owner.getWorld());
         ProtectedRegion region = regionManager.getRegion(regionName);
 
         if (region != null && region.getOwners().contains(ownerName)) {
@@ -128,7 +129,7 @@ public class Manager {
 
     public HashSet<String> getOwnedRegions(String playerName) {
         Player player = Bukkit.getPlayer(playerName);
-        RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
+        com.sk89q.worldguard.protection.managers.RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
         HashSet<String> ownedRegions = new HashSet<>();
         for (ProtectedRegion region : regionManager.getRegions().values()) {
             if (region.getOwners().contains(playerName)) {
