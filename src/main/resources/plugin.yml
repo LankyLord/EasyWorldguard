@@ -1,0 +1,12 @@
+name: EasyWorldguard
+version: ${version}
+description: Wrapper for worldguard.
+authors: [Lanky_Lord, cedeel]
+website: https://github.com/LankyLord/EasyWorldguard
+
+main: net.fuzzyblocks.easyworldguard.EasyWorldguard
+database: false
+
+commands:
+  protection:
+    description: Basic command
