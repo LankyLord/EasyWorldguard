@@ -65,6 +65,13 @@ public class RegionManager {
         return worldGuard.getRegionManager(world);
     }
 
+    /**
+     * Claim a WorldGuard region for a player
+     *
+     * @param playerName Player to become owner of region
+     * @param regionName Name of region
+     * @return True if region was successfully created, false otherwise
+     */
     public boolean claimRegion(String playerName, String regionName) {
         Selection selection = this.getSelection(playerName);
         if (selection != null) {
@@ -96,6 +103,14 @@ public class RegionManager {
         return false;
     }
 
+    /**
+     * Remove a region from WorldGuard
+     *
+     * @param playerName Player who is removing the region
+     * @param regionName Name of region to be removed
+     * @return
+     */
+
     public boolean deleteRegion(String playerName, String regionName) {
         Player player = Bukkit.getPlayer(playerName);
         com.sk89q.worldguard.protection.managers.RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
@@ -108,6 +123,14 @@ public class RegionManager {
         return false;
     }
 
+    /**
+     * Add a member to a region
+     *
+     * @param ownerName  Name of the player issuing command
+     * @param memberName Name of the player to be added as a member
+     * @param regionName Name of the region to add member to
+     * @return True if member was added, false otherwise
+     */
     public boolean addMember(String ownerName, String memberName, String regionName) {
         Player owner = Bukkit.getPlayer(ownerName);
         com.sk89q.worldguard.protection.managers.RegionManager regionManager = worldGuard.getRegionManager(owner.getWorld());
@@ -120,6 +143,14 @@ public class RegionManager {
         return false;
     }
 
+    /**
+     * Give a region to another player
+     *
+     * @param ownerName  Name of the player issuing command
+     * @param newOwner   Name of new owner
+     * @param regionName Name of the region to be transferred
+     * @return True if region was successfully transferred, false otherwise
+     */
     public boolean giveRegion(String ownerName, String newOwner, String regionName) {
         Player owner = Bukkit.getPlayer(ownerName);
         com.sk89q.worldguard.protection.managers.RegionManager regionManager = worldGuard.getRegionManager(owner.getWorld());
@@ -134,6 +165,12 @@ public class RegionManager {
         return false;
     }
 
+    /**
+     * Get all regions owned by a player
+     *
+     * @param playerName Player whose regions to lookup
+     * @return HashSet of all regions of which player is an owner
+     */
     public HashSet<String> getOwnedRegions(String playerName) {
         Player player = Bukkit.getPlayer(playerName);
         com.sk89q.worldguard.protection.managers.RegionManager regionManager = worldGuard.getRegionManager(player.getWorld());
