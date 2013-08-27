@@ -31,7 +31,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.databases.ProtectionDatabaseException;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.fuzzyblocks.easyworldguard.EasyWorldguard;
@@ -67,24 +67,31 @@ public class RegionManager {
 
     public boolean claimRegion(String playerName, String regionName) {
         Selection selection = this.getSelection(playerName);
-        World world = selection.getWorld();
-        com.sk89q.worldguard.protection.managers.RegionManager regionManager = getRegionManager(world);
-        if (regionManager.getRegion(regionName) == null) {
-            DefaultDomain owners = new DefaultDomain();
+        if (selection != null) {
+            World world = selection.getWorld();
+            com.sk89q.worldguard.protection.managers.RegionManager regionManager = getRegionManager(world);
+            if (regionManager.getRegion(regionName) == null) {
+                DefaultDomain owners = new DefaultDomain();
 
-            owners.addPlayer(playerName);
+                owners.addPlayer(playerName);
 
-            BlockVector maximumPoint = selection.getNativeMaximumPoint().toBlockVector();
-            BlockVector minimumPoint = selection.getNativeMinimumPoint().toBlockVector();
+                BlockVector maximumPoint = selection.getNativeMaximumPoint().toBlockVector();
+                BlockVector minimumPoint = selection.getNativeMinimumPoint().toBlockVector();
 
-            maximumPoint.setY(world.getMaxHeight());
-            minimumPoint.setY(0);
+                maximumPoint = maximumPoint.setY(world.getMaxHeight()).toBlockVector();
+                minimumPoint = minimumPoint.setY(0).toBlockVector();
 
-            //TODO: Add check for area
-            ProtectedCuboidRegion protectedRegion = new ProtectedCuboidRegion(regionName, maximumPoint, minimumPoint);
-            regionManager.addRegion(protectedRegion);
-            regionManager.getRegion(regionName).setOwners(owners);
-            return true;
+                //TODO: Add check for area
+                ProtectedCuboidRegion protectedRegion = new ProtectedCuboidRegion(regionName, maximumPoint, minimumPoint);
+                regionManager.addRegion(protectedRegion);
+                regionManager.getRegion(regionName).setOwners(owners);
+                try {
+                    regionManager.save();
+                } catch (ProtectionDatabaseException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -139,7 +146,6 @@ public class RegionManager {
         return ownedRegions;
     }
 }
-//TODO: Add way of resizing region
 //TODO: Override worldguard wand with own equivalent
 //TODO: Possibly add automated region naming
 //TODO: Add check for maximum region count
